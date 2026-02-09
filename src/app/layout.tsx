@@ -1,22 +1,21 @@
 import type { Metadata } from "next";
-// 1. Importamos as fontes do Google aqui
-import { Inter, Roboto_Slab } from "next/font/google"; 
+import { Geist, Geist_Mono } from "next/font/google";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
-// 2. Configuramos as variáveis. Quer mudar a fonte? Mude AQUI.
-const mainFont = Inter({ 
-  subsets: ["latin"], 
-  variable: "--font-main" // Identidade interna
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
 });
 
-const titleFont = Roboto_Slab({ 
-  subsets: ["latin"], 
-  variable: "--font-title" // Identidade para títulos
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Paróquia SJB",
-  description: "Sistema Paroquial Integrado",
+  title: "Paróquia São João Batista",
+  description: "Diocese de Ji-Paraná - Presidente Médici/RO",
 };
 
 export default function RootLayout({
@@ -26,9 +25,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      {/* 3. Injetamos as variáveis no corpo do site */}
-      <body className={`${mainFont.variable} ${titleFont.variable} font-sans antialiased`}>
+      <body className="...">
         {children}
+        <Toaster richColors />
       </body>
     </html>
   );

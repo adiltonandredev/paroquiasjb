@@ -2,114 +2,106 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X, Church } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Menu, X, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { siteSettings } from "@/config/settings"; // Buscando da config centralizada
+import { siteSettings } from "@/config/settings";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
-  // Efeito para detectar rolagem
   useEffect(() => {
     const handleScroll = () => {
-      // Se rolar mais de 50px, ativa o modo "Scrolled"
-      setIsScrolled(window.scrollY > 50);
+      setIsScrolled(window.scrollY > 10);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-
-  // Lista de Links (Futuramente virá da API/Admin)
   const navLinks = [
-    { name: "Início", href: "/" },
+    { name: "Home", href: "/" },
     { name: "História", href: "/historia" },
     { name: "Horários", href: "/horarios" },
     { name: "Fale Conosco", href: "/contato" },
   ];
 
-  // Definição de Cores baseada no estado do Scroll
-  // Topo: Texto Branco | Rolou: Texto Escuro/Primary
-  const textColorClass = isScrolled ? "text-gray-700 hover:text-primary" : "text-white hover:text-gray-200 drop-shadow-md";
-  const logoColorClass = isScrolled ? "text-primary" : "text-white drop-shadow-md";
-  const buttonVariant = isScrolled ? "primary" : "outline"; // Botão muda de estilo também
-
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out",
-        isScrolled
-          ? "bg-white/90 backdrop-blur-md shadow-md py-2" // ROLAGEM: Branco quase sólido (10% transp)
-          : "bg-transparent py-4"                           // TOPO: 100% Transparente (90% transp visual)
+        "fixed top-0 left-0 w-full z-50 transition-all duration-300",
+        isScrolled 
+          ? "bg-white/95 backdrop-blur-md shadow-md py-2" 
+          : "bg-transparent py-4"
       )}
     >
-      <div className="container mx-auto max-w-7xl flex items-center justify-between px-6 h-20">
+      <div className="container mx-auto px-6 flex items-center h-16">
         
-        {/* 1. Logo (Buscando de settings) */}
-        <Link href="/" className={cn("flex items-center gap-2 font-bold text-xl font-serif transition-colors", logoColorClass)}>
-          <Church className="h-6 w-6" />
-          <span>{siteSettings.general.logoText}</span>
+        {/* 1. LOGO (Buscando das configurações) */}
+        <Link href="/" className="shrink-0">
+          <img 
+            src="/images/logo.png" // No projeto real, usar logic do settings
+            alt={siteSettings.general.name}
+            className={cn(
+              "h-12 w-auto transition-all",
+              isScrolled ? "brightness-100" : "brightness-0 invert" // Inverte para branco se não rolou
+            )}
+          />
         </Link>
 
-        {/* 2. Menu Desktop */}
-        <nav className="hidden md:flex items-center gap-8">
+        {/* 2. MENU ALINHADO À ESQUERDA COM ESPAÇO (ml-10) */}
+        <nav className="hidden md:flex items-center ml-10 flex-grow">
           {navLinks.map((link) => (
             <Link
-              key={link.href}
+              key={link.name}
               href={link.href}
-              className={cn("text-sm font-medium transition-colors", textColorClass)}
+              className={cn(
+                "text-sm font-bold tracking-widest px-4 transition-colors",
+                isScrolled ? "text-primary hover:text-secondary" : "text-white hover:text-gray-200"
+              )}
             >
               {link.name}
             </Link>
           ))}
-          
-          <Link href="/design-system">
-             {/* O botão muda de 'borda branca' para 'azul sólido' ao rolar */}
-             <Button 
-                size="sm" 
-                variant={isScrolled ? "primary" : "outline"} 
-                className={!isScrolled ? "border-white text-white hover:bg-white hover:text-primary" : ""}
-             >
-                Área Restrita
-             </Button>
-          </Link>
         </nav>
 
-        {/* 3. Botão Menu Mobile */}
-        <button 
-          className={cn("md:hidden p-2 transition-colors", isScrolled ? "text-gray-600" : "text-white")} 
-          onClick={toggleMenu}
-        >
-          {isMenuOpen ? <X /> : <Menu />}
+        {/* 3. COMPONENTE DE PESQUISA (Igual ao print) */}
+        <div className="hidden md:flex items-center ml-auto">
+          <form className="relative flex items-center">
+            <input 
+              type="text" 
+              placeholder="Buscar..." 
+              className={cn(
+                "px-4 py-1.5 rounded-full border text-sm outline-none transition-all w-48 focus:w-64",
+                isScrolled 
+                  ? "bg-white border-gray-300 text-primary" 
+                  : "bg-white/10 border-white/20 text-white placeholder:text-gray-300 backdrop-blur-sm"
+              )}
+            />
+            <button type="submit" className="absolute right-3">
+              <Search className={cn("h-4 w-4", isScrolled ? "text-secondary" : "text-white")} />
+            </button>
+          </form>
+        </div>
+
+        {/* Botão Mobile */}
+        <button className="md:hidden ml-auto p-2 text-white" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          {isMenuOpen ? <X size={28} /> : <Menu size={28} className={isScrolled ? "text-primary" : "text-white"} />}
         </button>
       </div>
 
-      {/* 4. Menu Mobile (Gaveta) */}
-      {isMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 w-full bg-white border-t shadow-lg animate-in slide-in-from-top-5">
-          <nav className="flex flex-col p-4 space-y-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setIsMenuOpen(false)}
-                className="text-base font-medium text-gray-700 hover:text-primary p-2 rounded-md hover:bg-gray-50"
-              >
-                {link.name}
-              </Link>
-            ))}
-            <div className="pt-2 border-t">
-              <Link href="/design-system" onClick={() => setIsMenuOpen(false)}>
-                 <Button className="w-full">Área Restrita</Button>
-              </Link>
-            </div>
-          </nav>
-        </div>
-      )}
+      {/* Menu Mobile Gaveta */}
+      <div className={cn(
+        "md:hidden absolute top-full left-0 w-full bg-white transition-all shadow-xl overflow-hidden",
+        isMenuOpen ? "max-h-screen border-t" : "max-h-0"
+      )}>
+        <nav className="flex flex-col p-6 space-y-4">
+          {navLinks.map((link) => (
+            <Link key={link.name} href={link.href} className="text-primary font-bold uppercase text-sm tracking-widest">
+              {link.name}
+            </Link>
+          ))}
+        </nav>
+      </div>
     </header>
   );
 }

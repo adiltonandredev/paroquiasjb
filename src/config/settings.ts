@@ -2,9 +2,9 @@
 
 export const siteSettings = {
   general: {
-    name: "Paróquia São João Batista",
-    logoText: "Paróquia SJB", // Texto caso a imagem falhe
-    // No futuro, aqui virá a URL da imagem do banco. Por enquanto usamos ícone.
+    name: "Paróquia SJB",
+    logo: "/images/logo.png",   
+    footerSlogan: "Ide por todo o mundo e pregai o Evangelho a toda criatura. (Marcos 16, 15)",
     logoIcon: true, 
   },
   contact: {

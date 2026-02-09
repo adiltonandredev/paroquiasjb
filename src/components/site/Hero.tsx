@@ -1,10 +1,10 @@
-"use client"; // Obrigatório para animações e interatividade
+"use client";
 
 import { useState, useEffect } from "react";
 import { HeroService } from "@/services/hero-service";
 import { HeroSlide } from "@/types";
 import { Button } from "@/components/ui/button";
-import { Calendar, Heart, ChevronLeft, ChevronRight } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -12,12 +12,10 @@ export function Hero() {
   const [slides, setSlides] = useState<HeroSlide[]>([]);
   const [current, setCurrent] = useState(0);
 
-  // 1. Busca os dados ao carregar
   useEffect(() => {
     HeroService.getSlides().then(setSlides);
   }, []);
 
-  // 2. Rotação Automática (a cada 6 segundos)
   useEffect(() => {
     if (slides.length === 0) return;
     const timer = setInterval(() => {
@@ -34,15 +32,14 @@ export function Hero() {
     setCurrent((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
   };
 
-  // Se ainda não carregou os dados, mostra um esqueleto simples
-  if (slides.length === 0) return <div className="h-[92vh] bg-black animate-pulse" />;
+  if (slides.length === 0) return <div className="h-[600px] bg-muted animate-pulse" />;
 
   const slide = slides[current];
 
   return (
-    <section className="relative h-[92vh] min-h-[600px] w-full overflow-hidden bg-black group">
+    <section className="relative h-[100vh] md:h-[100vh] min-h-[600px] w-full overflow-hidden bg-black group">
       
-      {/* --- CARROSSEL DE IMAGENS --- */}
+      {/* --- CARROSSEL DE FUNDO --- */}
       {slides.map((item, index) => (
         <div
           key={item.id}
@@ -53,90 +50,119 @@ export function Hero() {
         >
           {/* Imagem de Fundo */}
           <div 
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-[6000ms] ease-linear scale-105"
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-[8000ms] ease-linear"
             style={{ 
               backgroundImage: `url('${item.backgroundImageUrl}')`,
-              transform: index === current ? "scale(110%)" : "scale(100%)" // Efeito Zoom lento
+              transform: index === current ? "scale(110%)" : "scale(100%)"
             }}
           />
-          {/* Película Escura */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/80" />
+          
+          {/* --- O DEGRADÊ MARROM (RESTORED) --- */}
+          {/* Começa Marrom (#754D25) na esquerda e fica transparente na direita */}
+          <div 
+            className="absolute inset-0"
+            style={{
+              background: "linear-gradient(to right, rgba(117, 77, 37, 0.95) 0%, rgba(117, 77, 37, 0.8) 40%, transparent 100%)"
+            }}
+          />
+
+          {/* Sombra extra no rodapé para destacar os controles */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
         </div>
       ))}
 
-      {/* --- CONTEÚDO DO TEXTO --- */}
-      <div className="absolute inset-0 z-20 flex items-center justify-center">
-        <div className="container mx-auto px-4 text-center flex flex-col items-center">
+      {/* --- CONTEÚDO (TEXTOS) --- */}
+      <div className="absolute inset-0 z-20 flex items-center">
+        <div className="container mx-auto px-6 md:px-12">
           
-          {/* O texto muda com key={current} para reiniciar a animação */}
-          <div key={current} className="animate-in fade-in slide-in-from-bottom-8 duration-700">
+          <div key={current} className="max-w-3xl flex flex-col items-start text-left animate-in fade-in slide-in-from-left-8 duration-700">
             
-            <span className="inline-block py-1.5 px-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white font-medium tracking-wider uppercase text-sm mb-6">
+            {/* Badge Dourada */}
+            <span 
+                className="inline-flex items-center py-1 px-3 rounded-full border font-bold tracking-wider uppercase text-xs mb-6 backdrop-blur-md"
+                style={{ 
+                    backgroundColor: "rgba(196, 164, 95, 0.2)", // Dourado transparente
+                    borderColor: "#C4A45F", 
+                    color: "#C4A45F" 
+                }}
+            >
+              <span className="w-2 h-2 rounded-full bg-[#C4A45F] mr-2 animate-pulse"/>
               {slide.subtitle}
             </span>
 
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold font-serif text-white leading-tight drop-shadow-2xl max-w-4xl">
-              {slide.titleRest} <br className="hidden md:block"/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">
+            {/* Título Principal */}
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold font-serif text-white leading-tight drop-shadow-lg mb-6">
+              {slide.titleRest} <br/>
+              <span className="italic" style={{ color: "#C4A45F" }}> {/* Dourado */}
                 {slide.titleHighlight}
               </span>
             </h1>
 
-            <p className="text-lg md:text-xl text-gray-200 max-w-2xl mx-auto leading-relaxed mt-6 mb-10 opacity-90">
+            {/* Descrição (Branca sobre o degradê marrom = Leitura Perfeita) */}
+            <p className="text-lg text-white/95 max-w-xl leading-relaxed mb-8 font-light drop-shadow-sm">
               {slide.description}
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            {/* Botões de Ação */}
+            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+              
+              {/* Botão Marrom Sólido + Texto Branco */}
               <Link href={slide.primaryButton.url}>
-                <Button size="lg" className="h-14 px-8 text-lg gap-3 font-semibold shadow-lg hover:scale-105 transition-all">
-                  <Calendar className="w-5 h-5" />
+                <Button 
+                    size="lg" 
+                    className="h-14 px-8 text-base font-bold shadow-lg shadow-black/20 w-full sm:w-auto border border-white/10"
+                    style={{ backgroundColor: "#754D25", color: "#FFFFFF" }}
+                >
+                  <Calendar className="w-5 h-5 mr-2" />
                   {slide.primaryButton.text}
                 </Button>
               </Link>
               
+              {/* Botão Transparente */}
               <Link href={slide.secondaryButton.url}>
-                <Button variant="outline" size="lg" className="h-14 px-8 text-lg gap-3 font-semibold border-white/50 text-white hover:bg-white hover:text-gray-900 hover:scale-105 transition-all">
-                  <Heart className="w-5 h-5" />
+                <Button 
+                    variant="outline" 
+                    size="lg" 
+                    className="h-14 px-8 text-base bg-transparent border-white/40 text-white hover:bg-white hover:text-[#754D25] w-full sm:w-auto backdrop-blur-sm"
+                >
                   {slide.secondaryButton.text}
+                  <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </Link>
             </div>
           </div>
-
         </div>
       </div>
 
-      {/* --- CONTROLES (Setas) --- */}
-      <button 
-        onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-30 p-3 rounded-full bg-black/20 text-white backdrop-blur-sm border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-primary"
-      >
-        <ChevronLeft size={32} />
-      </button>
+      {/* --- SETAS DE NAVEGAÇÃO --- */}
+      <div className="absolute bottom-8 right-8 z-30 flex gap-2">
+        <button 
+          onClick={prevSlide}
+          className="p-3 rounded-full bg-black/20 text-white border border-white/20 hover:bg-[#C4A45F] hover:border-[#C4A45F] transition-all backdrop-blur-sm"
+        >
+          <ChevronLeft size={24} />
+        </button>
+        <button 
+          onClick={nextSlide}
+          className="p-3 rounded-full bg-black/20 text-white border border-white/20 hover:bg-[#C4A45F] hover:border-[#C4A45F] transition-all backdrop-blur-sm"
+        >
+          <ChevronRight size={24} />
+        </button>
+      </div>
 
-      <button 
-        onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-30 p-3 rounded-full bg-black/20 text-white backdrop-blur-sm border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-primary"
-      >
-        <ChevronRight size={32} />
-      </button>
-
-      {/* --- INDICADORES (Bolinhas) --- */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-30 flex gap-3">
+      {/* --- BARRA DE PROGRESSO --- */}
+      <div className="absolute bottom-0 left-0 w-full flex z-30">
         {slides.map((_, idx) => (
           <button
             key={idx}
             onClick={() => setCurrent(idx)}
             className={cn(
-              "w-3 h-3 rounded-full transition-all duration-300",
-              idx === current ? "bg-primary w-8" : "bg-white/50 hover:bg-white"
+              "h-1.5 flex-1 transition-all duration-500 ease-out",
+              idx === current ? "bg-[#C4A45F]" : "bg-white/20 hover:bg-white/40"
             )}
           />
         ))}
       </div>
-
-      {/* Degradê Inferior Suave (Mantenha o mesmo que você gostou) */}
-      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-gray-50 via-gray-50/60 to-transparent z-10 pointer-events-none" />
 
     </section>
   );

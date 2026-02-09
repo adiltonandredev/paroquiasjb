@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  darkMode: "class",
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -8,40 +9,14 @@ const config: Config = {
   ],
   theme: {
     extend: {
-        fontFamily: {
-        sans: ["var(--font-main)", "sans-serif"],
-        serif: ["var(--font-title)", "serif"],
-      },
-          colors: {
-            border: "hsl(var(--border))",
-            input: "hsl(var(--input))",
-            ring: "hsl(var(--ring))",
-            background: "hsl(var(--background))",
-            foreground: "hsl(var(--foreground))",
-            primary: {
-              DEFAULT: "hsl(var(--primary))",
-              foreground: "hsl(var(--primary-foreground))",
-            },
-            destructive: {
-              DEFAULT: "hsl(var(--destructive))",
-              foreground: "hsl(var(--destructive-foreground))",
-            },
-            success: {
-              DEFAULT: "hsl(var(--success))",
-              foreground: "hsl(var(--success-foreground))",
-            },
-            warning: {
-              DEFAULT: "hsl(var(--warning))",
-              foreground: "hsl(var(--warning-foreground))",
-            },
-          },
-          borderRadius: {
-            lg: "var(--radius)",
-            md: "calc(var(--radius) - 2px)",
-            sm: "calc(var(--radius) - 4px)",
-          },
-        },
+      colors: {
+        // Mapeia classes como bg-custom-brown direto para o Hex se necessário
+        'custom-brown': '#754D25',
+        'custom-gold': '#C4A45F',
+        'custom-dark': '#3B2A23',
+      }
+    },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animate")],
 };
 export default config;
