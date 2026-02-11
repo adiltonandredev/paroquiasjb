@@ -1,6 +1,6 @@
+import { Button } from "@/components/admin/ui/button";
 import { siteSettings } from "@/config/settings";
-import { MapPin, Navigation, ArrowRight, Clock } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ArrowRight, MapPin, Navigation } from "lucide-react";
 
 export function LocationSection() {
   const mapQuery = encodeURIComponent(`${siteSettings.general.name} ${siteSettings.contact.address}`);

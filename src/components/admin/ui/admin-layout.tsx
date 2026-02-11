@@ -18,8 +18,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const menuItems = [
     { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
-    { name: "Hero Slides", href: "/admin/hero", icon: ImageIcon },
-    { name: "Eventos & Missas", href: "/admin/eventos", icon: Calendar },
+    { name: "Paginas e Menus", href: "/admin/web-pages", icon: ImageIcon },
+    { name: "Posts", href: "/admin/posts", icon: Calendar },
+    { name: "Evento", href: "/admin/events", icon: Calendar },
     { name: "Configurações", href: "/admin/settings", icon: Settings },
   ];
 

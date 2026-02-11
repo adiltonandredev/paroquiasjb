@@ -1,9 +1,9 @@
 "use client";
 
-import * as Dialog from "@radix-ui/react-dialog";
-import { AlertTriangle, X, Info, AlertCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/admin/ui/button";
 import { cn } from "@/lib/utils";
+import * as Dialog from "@radix-ui/react-dialog";
+import { AlertCircle, AlertTriangle, Info, X } from "lucide-react";
 
 interface AlertModalProps {
   isOpen: boolean;

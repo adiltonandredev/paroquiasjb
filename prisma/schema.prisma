@@ -1,0 +1,129 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// 1. USUÁRIOS (Login)
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("editor")
+  sector    String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// 2. CONFIGURAÇÕES
+model Setting {
+  id                  Int      @id @default(autoincrement())
+  nome_paroquia       String?
+  cnpj                String?
+  diocese             String?
+  endereco            String?
+  cidade              String?
+  estado              String?
+  cep                 String?
+  telefone_fixo       String?
+  whatsapp            String?
+  email_geral         String?
+  nome_admin          String?
+  email_admin         String?
+  horario_semana      String?
+  horario_sabado      String?
+  facebook            String?
+  instagram           String?
+  youtube             String?
+  instagram_token     String?  @db.Text
+  instagram_fotos_qtd Int      @default(6)
+  texto_sobre         String?  @db.Text
+  copyright           String?
+  logo_url            String?
+  updatedAt           DateTime @updatedAt
+}
+
+// 3. PÁGINAS ESTÁTICAS
+model Page {
+  id        Int      @id @default(autoincrement())
+  title     String
+  slug      String   @unique
+  content   String?  @db.LongText
+  type      String   @default("menu")
+  status    String   @default("draft")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// 4. POSTS
+model Post {
+  id                 Int       @id @default(autoincrement())
+  title              String
+  slug               String    @unique
+  summary            String?   @db.VarChar(255)
+  content            String?   @db.LongText
+  coverImage         String?
+  category           String
+  isHighlight        Boolean   @default(false)
+  highlightExpiresAt DateTime?
+  status             String    @default("published")
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+}
+
+// 5. EVENTOS
+model Event {
+  id                 Int       @id @default(autoincrement())
+  name               String
+  category           String
+  date               DateTime
+  time               String
+  location           String?
+  summary            String?   @db.VarChar(255)
+  description        String?   @db.LongText
+  coverImage         String?
+  isHighlight        Boolean   @default(false)
+  highlightExpiresAt DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+}
+
+// 6. GALERIA
+model Album {
+  id        Int      @id @default(autoincrement())
+  name      String
+  slug      String   @unique
+  date      DateTime?
+  cover     String?
+  folder    String?
+  photos    Photo[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Photo {
+  id        Int      @id @default(autoincrement())
+  url       String
+  filename  String
+  albumId   Int
+  album     Album    @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+// 7. SEGURANÇA (Recuperação de Senha)
+model PasswordResetToken {
+  id        Int      @id @default(autoincrement())
+  email     String
+  token     String   @unique
+  expires   DateTime
+  createdAt DateTime @default(now())
+
+  @@unique([email, token])
+}

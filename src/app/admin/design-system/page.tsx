@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Modal } from "@/components/ui/modal";
+import { Button } from "@/components/admin/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input"; // Usando o componente Input estilizado
 import { Label } from "@/components/ui/label"; // Usando o componente Label estilizado
-import { masks } from "@/lib/masks";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Modal } from "@/components/ui/modal";
 import { Separator } from "@/components/ui/separator";
-import { CheckCircle, AlertTriangle, Info } from "lucide-react";
+import { masks } from "@/lib/masks";
+import { AlertTriangle, CheckCircle, Info } from "lucide-react";
+import { useState } from "react";
 
 export default function DesignSystemPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);

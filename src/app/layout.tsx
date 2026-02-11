@@ -1,33 +1,24 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { Toaster } from "@/components/ui/sonner";
+import { Inter } from "next/font/google";
 import "./globals.css";
+import { Providers } from "@/components/providers"; 
+import { Toaster } from "@/components/admin/ui/sonner";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Paróquia São João Batista",
-  description: "Diocese de Ji-Paraná - Presidente Médici/RO",
+  description: "Sistema Administrativo",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR">
-      <body className="...">
-        {children}
-        <Toaster richColors />
+      <body className={inter.className}>
+        <Providers>
+          {children}
+        </Providers>
+        <Toaster /> {/* <--- Adicione aqui */}
       </body>
     </html>
   );

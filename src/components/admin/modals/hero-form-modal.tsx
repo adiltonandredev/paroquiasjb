@@ -1,11 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { X, Upload, Info, AlertCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/components/admin/ui/button";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Upload, X } from "lucide-react";
+import { useState } from "react";
 import { AlertModal } from "./alert-modal"; // Importando o padrão de alerta
 
 export function HeroFormModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {

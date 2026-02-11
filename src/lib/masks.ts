@@ -1,13 +1,11 @@
-// Central de Máscaras - Mudou aqui, mudou em todos os inputs do sistema
-
 export const masks = {
   cpf: (value: string) => {
     return value
-      .replace(/\D/g, "") // Remove tudo que não é dígito
+      .replace(/\D/g, "")
       .replace(/(\d{3})(\d)/, "$1.$2")
       .replace(/(\d{3})(\d)/, "$1.$2")
       .replace(/(\d{3})(\d{1,2})/, "$1-$2")
-      .replace(/(-\d{2})\d+?$/, "$1"); // Impede digitar mais
+      .replace(/(-\d{2})\d+?$/, "$1");
   },
 
   phone: (value: string) => {
@@ -26,7 +24,6 @@ export const masks = {
   },
 
   currency: (value: string) => {
-    // Formata para moeda BRL (R$ 1.200,50)
     const number = Number(value.replace(/\D/g, "")) / 100;
     return new Intl.NumberFormat("pt-BR", {
       style: "currency",
