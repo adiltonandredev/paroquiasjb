@@ -1,0 +1,168 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// 1. USUÁRIOS (Login)
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("editor")
+  sector    String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// 2. CONFIGURAÇÕES
+model Setting {
+  id                  Int      @id @default(autoincrement())
+  nome_paroquia       String?
+  cnpj                String?
+  diocese             String?
+  endereco            String?
+  cidade              String?
+  estado              String?
+  cep                 String?
+  telefone_fixo       String?
+  whatsapp            String?
+  email_geral         String?
+  
+  // -- CAMPOS NOVOS DE GOVERNO & CLERO --
+  paroco              String?
+  vigarios            String?  @db.Text
+  religiosos          String?  @db.Text
+  // ------------------------------------
+
+  // (Mantive nome_admin e email_admin por segurança, mas usaremos paroco na tela)
+  nome_admin          String?
+  email_admin         String?
+
+  horario_semana      String?
+  horario_sabado      String?
+  facebook            String?
+  instagram           String?
+  youtube             String?
+  instagram_token     String?  @db.Text
+  instagram_fotos_qtd Int      @default(6)
+  texto_sobre         String?  @db.Text
+  copyright           String?
+  logo_url            String? @db.LongText
+  updatedAt           DateTime @updatedAt
+}
+
+// 3. PÁGINAS ESTÁTICAS
+model Page {
+  id        Int      @id @default(autoincrement())
+  title     String
+  slug      String   @unique
+  content   String?  @db.LongText
+  type      String   @default("menu") // "menu", "submenu", "footer"
+  status    String   @default("draft")
+  
+  // -- NOVO: HIERARQUIA DE MENU --
+  parentId  Int?     // ID da página pai (se for submenu)
+  parent    Page?    @relation("PageHierarchy", fields: [parentId], references: [id])
+  children  Page[]   @relation("PageHierarchy")
+  // -----------------------------
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// 4. POSTS
+model Post {
+  id                 Int       @id @default(autoincrement())
+  title              String
+  slug               String    @unique
+  summary            String?   @db.VarChar(255)
+  content            String?   @db.LongText
+  coverImage         String?   @db.LongText
+  category           String
+  isHighlight        Boolean   @default(false)
+  highlightExpiresAt DateTime?
+  status             String    @default("published")
+  order Int          @default(0)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+}
+
+// 5. EVENTOS
+model Event {
+  id                 Int       @id @default(autoincrement())
+  name               String
+  category           String
+  date               DateTime
+  time               String
+  location           String?
+  slug               String?   @unique
+  summary            String?   @db.VarChar(255)
+  description        String?   @db.LongText
+  coverImage         String?   @db.LongText
+  isHighlight        Boolean   @default(false)
+  highlightExpiresAt DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+}
+
+// 6. GALERIA
+model Album {
+  id        Int      @id @default(autoincrement())
+  name      String
+  slug      String   @unique
+  date      DateTime?
+  cover     String?
+  folder    String?
+  photos    Photo[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Photo {
+  id        Int      @id @default(autoincrement())
+  url       String
+  filename  String
+  albumId   Int
+  album     Album    @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+// 7. SEGURANÇA (Recuperação de Senha)
+model PasswordResetToken {
+  id        Int      @id @default(autoincrement())
+  email     String
+  token     String   @unique
+  expires   DateTime
+  createdAt DateTime @default(now())
+
+  @@unique([email, token])
+}
+
+// 8. Mural
+model Notice {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String   @db.Text
+  imageUrl    String?
+  expiresAt   DateTime?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// 9. Missa Diária
+model MassSchedule {
+  id        Int      @id @default(autoincrement())
+  title     String?
+  dayOfWeek Int
+  time      String
+  location  String
+}
