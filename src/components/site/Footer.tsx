@@ -7,306 +7,185 @@ import {
   Phone,
   MapPin,
   Smartphone,
-  Heart,
-  Copy,
-  Loader2,
+  MessageCircle,
+  Mail,
+  Clock,
   Facebook,
   Youtube,
-  ChevronDown, // Garante que está aqui
+  Users,
+  ChevronRight
 } from "lucide-react";
-import { cn } from "@/lib/utils"; // Garante que o caminho @/lib/utils existe
 import { siteSettings } from "@/config/settings";
 import { FooterCopyright } from "./FooterCopyright";
-import { toast } from "sonner";
 
-// 1. INTERFACE PARA O MENU
-interface WebPage {
-  id: number;
-  title: string;
-  slug: string;
-  children?: WebPage[];
-}
-
-// 2. INTERFACE COMPLETA PARA AS CONFIGURAÇÕES
 interface SiteSettingsData {
   nome_paroquia?: string | null;
-  cnpj?: string | null;
   endereco?: string | null;
   cidade?: string | null;
   estado?: string | null;
   telefone_fixo?: string | null;
   whatsapp?: string | null;
+  email_secretaria?: string | null;
   instagram?: string | null;
   facebook?: string | null;
   youtube?: string | null;
   logo_url?: string | null;
   texto_sobre?: string | null;
+  horario_semana?: string | null;
+  horario_sabado?: string | null;
+  // Campos Dinâmicos do Clero
+  paroco?: string | null; 
+  paroco_foto?: string | null; 
+  clero_auxiliar?: string | null;
 }
 
 export function Footer() {
-  const [pages, setPages] = useState<WebPage[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [settings, setSettings] = useState<SiteSettingsData | null>(null);
-  const [openMenuId, setOpenMenuId] = useState<number | null>(null);
-
+  const [isLoading, setIsLoading] = useState(true);
   const goldColor = "#C4A45F";
 
-  const toggleMenu = (id: number) => {
-    setOpenMenuId(openMenuId === id ? null : id);
-  };
-
   useEffect(() => {
-    async function fetchData() {
+    async function fetchSettings() {
       try {
-        const resSettings = await fetch("/api/settings", { cache: "no-store" });
-        if (resSettings.ok) {
-          const dataSettings = await resSettings.json();
-          setSettings(dataSettings);
-        }
-
-        const resPages = await fetch("/api/web-pages", { cache: "no-store" });
-        if (resPages.ok) {
-          const dataPages = await resPages.json();
-          setPages(dataPages);
+        const res = await fetch("/api/settings", { cache: "no-store" });
+        if (res.ok) {
+          const data = await res.json();
+          setSettings(data);
         }
       } catch (error) {
-        console.error("Erro ao carregar dados do footer:", error);
+        console.error("Erro ao carregar footer:", error);
       } finally {
         setIsLoading(false);
       }
     }
-    fetchData();
+    fetchSettings();
   }, []);
 
-  const copyPix = () => {
-    const pixKey = settings?.cnpj || "";
-    if (pixKey) {
-      navigator.clipboard.writeText(pixKey);
-      toast.success("Chave PIX copiada!");
-    } else {
-      toast.error("Chave PIX não configurada.");
-    }
-  };
-
   return (
-    <footer className="relative text-gray-300 font-sans border-t border-[#C4A45F]/30">
-      <div className="relative overflow-hidden bg-[#23140c]">
-        <div
-          className="absolute inset-0 z-0 bg-cover bg-center opacity-10 pointer-events-none mix-blend-overlay"
-          style={{
-            backgroundImage:
-              "url('https://www.transparenttextures.com/patterns/cubes.png')",
-          }}
-        />
+    <footer className="bg-[#23140c] text-gray-300 border-t border-[#C4A45F]/20 font-sans">
+      <div className="container mx-auto px-6 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+          
+          {/* COLUNA 1: Identidade */}
+          <div className="space-y-6">
+            <Link href="/" className="inline-block">
+              <img
+                src={settings?.logo_url || siteSettings.general.logo}
+                alt="Logo"
+                className="h-20 w-auto brightness-0 invert opacity-90 object-contain"
+              />
+            </Link>
+            <p className="text-sm leading-relaxed italic opacity-70 text-justify">
+              {settings?.texto_sobre || "Comunidade de fé a serviço da Diocese de Ji-Paraná."}
+            </p>
+            <div className="flex items-center gap-3">
+              {settings?.instagram && (
+                <a href={settings.instagram} target="_blank" rel="noreferrer" className="p-2 rounded-lg bg-white/5 hover:bg-[#C4A45F] hover:text-[#23140c] transition-all">
+                  <Instagram size={18} />
+                </a>
+              )}
+              {settings?.facebook && (
+                <a href={settings.facebook} target="_blank" rel="noreferrer" className="p-2 rounded-lg bg-white/5 hover:bg-[#C4A45F] hover:text-[#23140c] transition-all">
+                  <Facebook size={18} />
+                </a>
+              )}
+              {settings?.youtube && (
+                <a href={settings.youtube} target="_blank" rel="noreferrer" className="p-2 rounded-lg bg-white/5 hover:bg-[#C4A45F] hover:text-[#23140c] transition-all">
+                  <Youtube size={18} />
+                </a>
+              )}
+            </div>
+          </div>
 
-        <div className="relative z-10 container mx-auto px-6 py-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-            {/* COLUNA 1: Identidade */}
-            <div className="space-y-6">
-              <Link href="/" className="group inline-block">
-                <img
-                  src={settings?.logo_url || siteSettings.general.logo}
-                  alt={settings?.nome_paroquia || "Logo"}
-                  className="h-20 w-auto opacity-90 group-hover:opacity-100 transition-all duration-300 object-contain brightness-0 invert"
-                />
-              </Link>
-              <p className="text-sm opacity-70 text-justify leading-relaxed max-w-xs text-gray-300 italic">
-                {settings?.texto_sobre || siteSettings.general.footerSlogan}
-              </p>
-
-              <div className="flex items-center gap-4 pt-2">
-                {settings?.instagram && (
-                  <a
-                    href={settings.instagram}
-                    target="_blank"
-                    className="p-2 rounded-full bg-white/5 hover:bg-[#C4A45F] hover:text-white transition-all text-gray-400"
-                  >
-                    <Instagram size={18} />
-                  </a>
-                )}
-                {settings?.facebook && (
-                  <a
-                    href={settings.facebook}
-                    target="_blank"
-                    className="p-2 rounded-full bg-white/5 hover:bg-[#C4A45F] hover:text-white transition-all text-gray-400"
-                  >
-                    <Facebook size={18} />
-                  </a>
-                )}
+          {/* COLUNA 2: Atendimento */}
+          <div className="space-y-6">
+            <h3 className="text-white font-bold text-lg flex items-center gap-2">
+              <Clock size={20} style={{ color: goldColor }} /> Atendimento
+            </h3>
+            <div className="space-y-3 text-sm">
+              <div className="bg-white/5 p-3 rounded-lg border-l-2 border-[#C4A45F]">
+                <p className="text-[#C4A45F] text-[10px] font-bold uppercase tracking-widest">Segunda a Sexta</p>
+                <p className="text-white font-medium">{settings?.horario_semana || "08h às 18h"}</p>
+              </div>
+              <div className="bg-white/5 p-3 rounded-lg border-l-2 border-[#C4A45F]">
+                <p className="text-[#C4A45F] text-[10px] font-bold uppercase tracking-widest">Sábado</p>
+                <p className="text-white font-medium">{settings?.horario_sabado || "08h às 12h"}</p>
               </div>
             </div>
+          </div>
 
-            {/* COLUNA 2: Navegação com Acordeão */}
-            <div>
-              <h3 className="text-white font-bold mb-6 text-lg flex items-center gap-2">
-                <span className="w-1 h-6 rounded bg-[#C4A45F]"></span>
-                Navegação
-              </h3>
+          {/* COLUNA 3: Contatos */}
+          <div className="space-y-6">
+            <h3 className="text-white font-bold text-lg flex items-center gap-2">
+              <Phone size={20} style={{ color: goldColor }} /> Contato
+            </h3>
+            <ul className="space-y-4 text-sm">
+              <li className="flex items-start gap-3">
+                <MapPin size={18} style={{ color: goldColor }} className="mt-1 shrink-0" />
+                <span>
+                    {settings?.endereco || "Av. São João Batista, 1626"}<br/>
+                    {settings?.cidade || "Presidente Médici"} - {settings?.estado || "RO"}
+                </span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Phone size={18} style={{ color: goldColor }} />
+                <span className="text-white font-medium">{settings?.telefone_fixo || "(69) 93198-0321"}</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <MessageCircle size={18} style={{ color: goldColor }} />
+                <span className="text-white font-medium">{settings?.whatsapp || "(69) 93300-5360"}</span>
+              </li>
+              <li className="flex items-center gap-3 italic">
+                <Mail size={18} style={{ color: goldColor }} />
+                <span className="truncate">{settings?.email_secretaria || "secretaria@paroquiasjb.org.br"}</span>
+              </li>
+            </ul>
+          </div>
 
-              <ul className="space-y-3 text-sm">
-                <li>
-                  <Link
-                    href="/"
-                    className="hover:text-[#C4A45F] transition-colors flex items-center gap-2 tracking-wider font-bold text-[11px]"
-                  >
-                    • Home
-                  </Link>
-                </li>
-
-                {isLoading ? (
-                  <Loader2 className="animate-spin w-4 h-4 text-white/20" />
-                ) : (
-                  pages.map((page) => {
-                    const hasChildren =
-                      page.children && page.children.length > 0;
-                    const isOpen = openMenuId === page.id;
-
-                    return (
-                      <li key={page.id} className="flex flex-col">
-                        <div className="flex items-center justify-between group">
-                          {hasChildren ? (
-                            /* Se tem filhos, o clique no texto TAMBÉM abre o menu */
-                            <button
-                              onClick={() => toggleMenu(page.id)}
-                              className="hover:text-[#C4A45F] transition-colors flex items-center gap-2 text-[11px] font-bold tracking-wider flex-grow text-left"
-                            >
-                              • {page.title}
-                            </button>
-                          ) : (
-                            /* Se NÃO tem filhos, navega direto */
-                            <Link
-                              href={`/${page.slug}`}
-                              className="hover:text-[#C4A45F] transition-colors flex items-center gap-2 text-[11px] font-bold tracking-wider flex-grow"
-                            >
-                              • {page.title}
-                            </Link>
-                          )}
-
-                          {hasChildren && (
-                            <button
-                              onClick={() => toggleMenu(page.id)}
-                              className="p-1 hover:bg-white/5 rounded transition-colors"
-                            >
-                              <ChevronDown
-                                size={14}
-                                className={cn(
-                                  "transition-transform duration-300 text-gray-500",
-                                  isOpen ? "rotate-180 text-[#C4A45F]" : "",
-                                )}
-                              />
-                            </button>
-                          )}
-                        </div>
-
-                        {/* Submenus - Removida a animação complexa para testar a abertura bruta primeiro */}
-                        {hasChildren && isOpen && (
-                          <ul className="ml-4 mt-2 space-y-2 border-l border-[#C4A45F]/20 pl-3">
-                            {page.children?.map((sub) => (
-                              <li key={sub.id}>
-                                <Link
-                                  href={`/${sub.slug}`}
-                                  className="text-gray-500 hover:text-[#C4A45F] transition-colors text-[10px] font-medium block py-1"
-                                >
-                                  {sub.title}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </li>
-                    );
-                  })
-                )}
-
-                <li>
-                  <Link
-                    href="/noticias"
-                    className="hover:text-[#C4A45F] transition-colors flex items-center gap-2 text-[11px] font-bold tracking-wider"
-                  >
-                    • Notícias
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* COLUNA 3: Contatos */}
-            <div className="space-y-8">
-              <div>
-                <h3 className="text-white font-bold mb-4 text-lg flex items-center gap-2">
-                  <span className="w-1 h-6 rounded bg-[#C4A45F]"></span>
-                  Onde Estamos
-                </h3>
-                <div className="flex gap-3 text-sm group cursor-default">
-                  <MapPin
-                    size={18}
-                    style={{ color: goldColor }}
-                    className="shrink-0"
-                  />
-                  <span className="group-hover:text-white transition-colors">
-                    {settings?.endereco
-                      ? `${settings.endereco}${settings.cidade ? `, ${settings.cidade}` : ""}${settings.estado ? ` - ${settings.estado}` : ""}`
-                      : siteSettings.contact.address}
-                  </span>
-                </div>
-              </div>
-              <div>
-                <h3 className="text-white font-bold mb-4 text-lg flex items-center gap-2">
-                  <span className="w-1 h-6 rounded bg-[#C4A45F]"></span>
-                  Contato
-                </h3>
-                <div className="space-y-3">
-                  {settings?.telefone_fixo && (
-                    <div className="flex gap-3 text-sm text-white">
-                      <Phone
-                        size={18}
-                        style={{ color: goldColor }}
-                        className="shrink-0"
-                      />
-                      <span>{settings.telefone_fixo}</span>
+          {/* COLUNA 4: Administrativo */}
+          <div className="space-y-6">
+            <h3 className="text-white font-bold text-lg flex items-center gap-2">
+              <Users size={20} style={{ color: goldColor }} /> Administrativo
+            </h3>
+            <div className="space-y-4 text-sm">
+              <Link href="/nossa-paroquia/clero" className="block group">
+                <div className="bg-white/5 p-4 rounded-xl border border-white/10 group-hover:border-[#C4A45F]/50 transition-all">
+                  <div className="flex items-center gap-3 mb-2">
+                    {settings?.paroco_foto ? (
+                        <img src={settings.paroco_foto} className="w-10 h-10 rounded-full object-cover border border-[#C4A45F]" alt="Pároco" />
+                    ) : (
+                        <div className="w-10 h-10 rounded-full bg-[#C4A45F]/20 flex items-center justify-center text-[#C4A45F]"><Users size={16}/></div>
+                    )}
+                    <div>
+                        <p className="text-[#C4A45F] font-bold uppercase text-[9px] tracking-widest leading-tight">Pároco</p>
+                        <p className="text-white font-serif text-base leading-tight">{settings?.paroco || "Pe. Sergio Kalizak"}</p>
                     </div>
-                  )}
-                  {settings?.whatsapp && (
-                    <div className="flex gap-3 text-sm text-white">
-                      <Smartphone
-                        size={18}
-                        style={{ color: goldColor }}
-                        className="shrink-0"
-                      />
-                      <span>{settings.whatsapp}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* COLUNA 4: Dízimo */}
-            <div className="relative group">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-[#C4A45F] to-[#754D25] rounded-xl opacity-30 group-hover:opacity-60 blur transition duration-500"></div>
-              <div className="relative bg-[#2e1c14] p-6 rounded-xl border border-[#C4A45F]/20 shadow-xl">
-                <h3 className="text-white font-bold mb-4 flex items-center gap-2">
-                  <Heart size={18} className="text-red-500 fill-red-500" />
-                  Dízimo e Ofertas
-                </h3>
-                <div
-                  onClick={copyPix}
-                  className="bg-black/40 p-3 rounded-lg border border-dashed border-[#C4A45F]/40 flex items-center justify-between group-hover:border-[#C4A45F] transition-all cursor-pointer"
-                >
-                  <div className="overflow-hidden">
-                    <p className="text-[9px] text-[#C4A45F] uppercase tracking-wider font-black">
-                      Chave Pix (CNPJ)
-                    </p>
-                    <p className="text-sm font-mono text-white truncate">
-                      {settings?.cnpj || "00.000.000/0001-00"}
-                    </p>
                   </div>
-                  <Copy
-                    size={16}
-                    className="text-gray-500 group-hover:text-white"
-                  />
+                  <p className="text-[11px] text-gray-500 flex items-center gap-1 group-hover:text-white transition-colors">
+                    Conheça nossa história <ChevronRight size={12} />
+                  </p>
+                </div>
+              </Link>
+              
+              <div className="mt-1">
+                <div className="rounded-lg hover:border-[#C4A45F]/30 transition-all">
+                    <a 
+                      href="https://copiosaredencao.org.br/" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="block opacity-80 hover:opacity-100 transition-opacity"
+                    >
+                      <img 
+                          src="/images/logotipo_oficial_horizontal.png" 
+                          alt="Copiosa Redenção" 
+                          className="h-15 w-auto brightness-0 invert"
+                      />
+                    </a>
                 </div>
               </div>
             </div>
           </div>
+
         </div>
       </div>
       <FooterCopyright />

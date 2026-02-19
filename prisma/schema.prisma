@@ -38,6 +38,9 @@ model Setting {
   
   // -- CAMPOS NOVOS DE GOVERNO & CLERO --
   paroco              String?
+  paroco_foto         String?  @db.LongText
+  paroco_bio          String?  @db.Text // Biografia (Texto longo)
+  clero_auxiliar      String?  @db.Text // Nomes dos vigários/irmão
   vigarios            String?  @db.Text
   religiosos          String?  @db.Text
   // ------------------------------------
