@@ -205,9 +205,9 @@ export default function NewPostPage() {
                     <span className="text-sm font-bold text-slate-700">
                       Enviar imagem de capa
                     </span>
-                    <p className="text-[10px] text-slate-500 mt-2 px-4 leading-relaxed">
-                      Recomendado: **1200x675px** (Proporção 16:9) <br />
-                      Formatos: **JPG, PNG ou WEBP** (Máx: 2MB)
+                    <p className="text-[10px] slate-500 mt-2 px-4 leading-relaxed">
+                      Recomendado: **1920x780px** (Proporção 16:9) <br />
+                      Formatos: **JPG, PNG ou WEBP** <span className="font-bold text-red-600">(Máx: 2MB)</span>
                     </p>
                     <input
                       type="file"
