@@ -40,7 +40,7 @@ export function Hero() {
       } catch (error) {
         console.error("Erro ao carregar banners:", error);
       } finally {
-        setLoading(false); // Isso destrava o Loader
+        setLoading(false);
       }
     }
     loadBanners();
@@ -100,7 +100,7 @@ export function Hero() {
               {slide.subtitle}
             </span>
 
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif font-bold text-white mb-6 leading-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-white mb-6 leading-tight">
               {slide.titleRest}
               {slide.titleHighlight && (
                 <span className="italic block text-[#C4A45F] font-normal">

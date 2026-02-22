@@ -7,7 +7,7 @@ import path from "path";
 
 interface HeroData {
     title: string;
-    slug?: string; // ADICIONADO
+    slug?: string;
     base64?: string;
     primaryButtonText?: string;
     primaryButtonUrl?: string;
@@ -40,8 +40,7 @@ export async function saveHeroSlide(data: HeroData) {
         const base64Data = data.base64!.replace(/^data:image\/\w+;base64,/, "");
         await fs.writeFile(filePath, base64Data, "base64");
 
-        // CORREÇÃO DO SLUG:
-        // Se não vier slug, ele limpa o título. Se vier, usa o que você digitou.
+
         const finalSlug = data.slug || data.title.toLowerCase()
             .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
             .replace(/[^\w\s-]/g, "")
@@ -55,7 +54,7 @@ export async function saveHeroSlide(data: HeroData) {
                 summary: data.primaryButtonUrl || "",
                 slug: finalSlug,
                 isHighlight: true,
-                category: "hero", // <--- Categoria fixa para banners
+                category: "hero",
                 status: "published",
             },
         });

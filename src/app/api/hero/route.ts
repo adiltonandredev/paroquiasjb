@@ -22,7 +22,6 @@ export async function GET() {
       titleHighlight: "",
       subtitle: b.category || "Destaque",
       description: "",
-      // O segredo da imagem: garantimos que o campo se chama backgroundImageUrl
       backgroundImageUrl: b.coverImage || "", 
       primaryButtonText: "Ler Mais",
       primaryButtonUrl: `/noticias/${b.slug}`,

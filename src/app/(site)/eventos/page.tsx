@@ -21,7 +21,7 @@ export default async function AgendaCompletaPage() {
       date: { gte: new Date() }
     },
     orderBy: { date: 'asc' }
-  }) as EventData[]; // <--- O SEGREDO ESTÁ AQUI
+  }) as EventData[];
 
   return (
     <main className="min-h-screen bg-[#fcfbf9] pt-32 pb-20">

@@ -32,7 +32,7 @@ export default async function MissasPage() {
             Horários das Celebrações
           </span>
           <h1 className="text-5xl font-serif font-bold text-[#23140c]">
-            Agenda de <span className="italic font-normal text-gray-400">Celebrações</span>
+            Agenda das <span className="italic font-normal text-gray-400">Celebrações</span>
           </h1>
         </header>
 
@@ -66,7 +66,7 @@ export default async function MissasPage() {
                       </div>
                       <div>
                         <p className="text-2xl font-serif font-bold text-[#23140c]">
-                          {missa.time}
+                          {missa.time}h
                         </p>
                         <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#C4A45F] flex items-center gap-1 mt-1">
                           <MapPin size={10} /> {missa.location}
