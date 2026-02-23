@@ -2,32 +2,27 @@ import { prisma } from "@/lib/prisma";
 import { Calendar, MapPin, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
-
-// 1. Criamos a interface para o TypeScript parar de reclamar dos campos
-interface EventItem {
-  id: string | number;
-  title: string;
-  slug: string;
-  date: Date | string;
-  location: string;
-  coverImage?: string | null;
-}
 
 export async function EventsSection() {
-  // 2. Buscamos os dados e forçamos o tipo (as any) para contornar a dúvida do Prisma
-  // Use 'event' ou 'events' conforme o seu schema.prisma
-  const data = await prisma.event.findMany({
+  // Buscamos apenas os campos necessários para o card
+  const events = await prisma.event.findMany({
     where: {
       date: {
         gte: new Date(),
       },
     },
+    select: {
+      id: true,
+      name: true, // No Prisma é 'name', não 'title'
+      slug: true,
+      date: true,
+      location: true,
+      coverImage: true,
+      // description: false, <-- Ignoramos o campo pesado
+    },
     orderBy: { date: 'asc' },
     take: 3,
-  }) as unknown as EventItem[]; 
-
-  const events = data || [];
+  });
 
   if (events.length === 0) return null;
 
@@ -56,15 +51,16 @@ export async function EventsSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {events.map((event) => (
             <Link 
-              key={String(event.id)}
+              key={event.id}
               href={`/eventos/${event.slug}`}
               className="group bg-white rounded-[2rem] overflow-hidden border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col h-full"
             >
               <div className="relative h-56 overflow-hidden">
                 <Image 
                   src={event.coverImage || "/images/event-placeholder.jpg"} 
-                  alt={event.title}
+                  alt={event.name}
                   fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
                 />
                 
@@ -85,7 +81,7 @@ export async function EventsSection() {
                 </div>
                 
                 <h3 className="text-xl font-serif font-bold text-[#23140c] mb-6 group-hover:text-[#754D25] transition-colors line-clamp-2 leading-tight flex-1">
-                  {event.title}
+                  {event.name}
                 </h3>
                 
                 <div className="pt-6 border-t border-gray-50 flex items-center justify-between">
