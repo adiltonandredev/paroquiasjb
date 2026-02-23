@@ -1,66 +1,83 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import Image from "next/image"; // Otimização essencial
 import { ArrowRight, Calendar } from "lucide-react";
 
 export async function NewsSection() {
   const news = await prisma.post.findMany({
     where: {
       status: "published",
-      category: { notIn: ["hero", "feature-card"] } // Garanta que 'hero' esteja aqui
+      category: { notIn: ["hero", "feature-card"] } 
     },
     orderBy: { createdAt: 'desc' },
     take: 3
   });
 
   return (
-    <section className="py-10 bg-gray-50">
-      <div className="container mx-auto px-4">
+    <section className="py-12 md:py-20 bg-[#fcfbf9]">
+      <div className="container mx-auto px-4 md:px-6">
 
-        {/* CABEÇALHO CORRIGIDO */}
-        <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
+        {/* CABEÇALHO MOBILE FIRST */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 md:mb-12 gap-4">
           <div>
-            <span className="text-[#C4A45F] font-bold tracking-wider uppercase text-sm">Fique por dentro</span>
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 mt-2">
+            <span className="text-[#C4A45F] font-bold tracking-[0.2em] uppercase text-[10px] md:text-xs bg-[#C4A45F]/10 px-3 py-1 rounded-full">
+              Fique por dentro
+            </span>
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#23140c] mt-4">
               Notícias e Avisos
             </h2>
           </div>
-          <Link href="/noticias" className="text-[#754D25] font-semibold flex items-center gap-2 hover:gap-3 transition-all">
-            Ver todas as notícias <ArrowRight size={18} />
+          <Link href="/noticias" className="group text-[#754D25] font-bold text-sm flex items-center gap-2 hover:text-[#C4A45F] transition-colors">
+            Ver todas as notícias 
+            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {/* GRID DE NOTÍCIAS */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {news.map((item) => (
             <Link key={item.id} href={`/noticias/${item.slug}`} className="group">
-              <article className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 h-full flex flex-col transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                <div className="h-48 overflow-hidden relative">
-                  <div
-                    className="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
-                    style={{ backgroundImage: `url(${item.coverImage || '/images/default-news.jpg'})` }}
+              <article className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 h-full flex flex-col transition-all duration-500 hover:shadow-xl hover:-translate-y-2">
+                
+                {/* CONTAINER DE IMAGEM OTIMIZADA */}
+                <div className="h-56 overflow-hidden relative">
+                  <Image
+                    src={item.coverImage || '/images/default-news.jpg'}
+                    alt={item.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
                   />
-                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-bold text-[#754D25] uppercase shadow-sm">
+                  {/* Overlay Gradiente suave para leitura */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                  
+                  <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm px-3 py-1 rounded-lg text-[10px] font-bold text-[#754D25] uppercase shadow-sm border border-[#C4A45F]/20">
                     {item.category}
                   </div>
                 </div>
 
-                <div className="p-6 flex flex-col flex-1">
-                  <div className="flex items-center gap-2 text-xs text-gray-500 mb-3">
+                <div className="p-6 md:p-8 flex flex-col flex-1">
+                  <div className="flex items-center gap-2 text-[11px] font-medium text-gray-500 mb-4 uppercase tracking-wider">
                     <Calendar size={14} className="text-[#C4A45F]" />
-                    {new Date(item.createdAt).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' })}
+                    {new Date(item.createdAt).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
                   </div>
 
-                  <h3 className="text-xl font-bold font-serif text-gray-900 mb-3 group-hover:text-[#754D25] transition-colors line-clamp-2">
+                  <h3 className="text-xl font-bold font-serif text-[#23140c] mb-4 group-hover:text-[#754D25] transition-colors line-clamp-2 leading-snug">
                     {item.title}
                   </h3>
 
-                  {/* TEXTO RESUMO (LIMPO) */}
-                  <p className="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-3 flex-1">
-                    {item.summary || item.content?.replace(/<[^>]*>?/gm, '').substring(0, 120) + '...'}
+                  <p className="text-gray-600 text-sm leading-relaxed mb-6 line-clamp-3 flex-1">
+                    {item.summary || item.content?.replace(/<[^>]*>?/gm, '').substring(0, 110) + '...'}
                   </p>
 
-                  <span className="text-[#754D25] font-medium text-sm flex items-center gap-1 group-hover:underline decoration-2 underline-offset-4">
-                    Ler mais
-                  </span>
+                  <div className="pt-4 border-t border-gray-50 flex items-center justify-between">
+                    <span className="text-[#754D25] font-bold text-xs uppercase tracking-widest group-hover:text-[#C4A45F] transition-colors">
+                      Ler mais
+                    </span>
+                    <div className="w-8 h-8 rounded-full bg-[#fcfbf9] flex items-center justify-center group-hover:bg-[#C4A45F] group-hover:text-white transition-all">
+                      <ArrowRight size={14} />
+                    </div>
+                  </div>
                 </div>
               </article>
             </Link>
@@ -68,7 +85,9 @@ export async function NewsSection() {
         </div>
 
         {news.length === 0 && (
-          <p className="text-center text-gray-400 italic py-10">Nenhuma notícia no momento.</p>
+          <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-gray-100">
+            <p className="text-gray-400 italic">Nenhuma notícia publicada no momento.</p>
+          </div>
         )}
       </div>
     </section>
