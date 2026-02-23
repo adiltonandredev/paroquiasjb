@@ -13,6 +13,15 @@ async function getHeroData(): Promise<HeroSlide[]> {
         isHighlight: true,
         status: "published",
       },
+      // O SEGREDO ESTÁ AQUI: Trazer apenas o que vai usar
+      select: {
+        id: true,
+        title: true,
+        category: true,
+        coverImage: true,
+        slug: true,
+        // NÃO incluímos o campo 'content' aqui, o que economiza megabytes de dados
+      },
       orderBy: { createdAt: "desc" },
       take: 5,
     });

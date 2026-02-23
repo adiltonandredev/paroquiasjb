@@ -61,9 +61,9 @@ export function SocialFloating() {
             rel="noopener noreferrer"
             className="flex items-center justify-center w-14 h-14 bg-[#25D366] text-white rounded-full shadow-lg hover:scale-110 transition-transform duration-300 group"
           >
-            <MessageCircle size={32} fill="currentColor" />
-            <span className="absolute right-16 bg-white text-slate-800 px-3 py-1 rounded-md text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity shadow-sm border whitespace-nowrap pointer-events-none">
-              WhatsApp
+            <MessageCircle size={32} fill="currentColor" strokeWidth={1.5} />
+            <span className="absolute right-20 bg-white text-slate-800 px-3 py-1 rounded-md text-sm opacity-0 group-hover:opacity-100 transition-opacity shadow-md border whitespace-nowrap pointer-events-none">
+              Fale conosco
             </span>
           </a>
         </div>
