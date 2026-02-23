@@ -1,6 +1,7 @@
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { CookieBanner } from "@/components/site/cookie-banner";
+import { SocialFloating } from "@/components/site/SocialFloating";
 
 export default function SiteLayout({
   children,
@@ -17,6 +18,7 @@ export default function SiteLayout({
       
       {/* ADICIONE A LINHA ABAIXO PARA O BANNER APARECER */}
       <CookieBanner />
+      <SocialFloating />
     </div>
   );
 }
