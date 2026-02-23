@@ -1,4 +1,4 @@
-import { Hero, type HeroSlide } from "@/components/site/Hero"; // Importamos o tipo daqui!
+import { Hero, type HeroSlide } from "@/components/site/Hero";
 import { EventsSection } from "@/components/site/EventsSection";
 import { FeatureSection } from "@/components/site/FeatureSection";
 import { NewsSection } from "@/components/site/NewsSection";
@@ -17,14 +17,13 @@ async function getHeroData(): Promise<HeroSlide[]> {
       take: 5,
     });
 
-    // O segredo está aqui: forçar cada valor a ser uma string, mesmo que venha nulo
     return banners.map((b) => ({
       id: String(b.id),
       titleRest: b.title || "",
       titleHighlight: "",
       subtitle: b.category || "Destaque",
       description: "",
-      backgroundImageUrl: b.coverImage || "/placeholder.jpg", // Nunca deixa ser null
+      backgroundImageUrl: b.coverImage || "/placeholder.jpg",
       primaryButtonText: "Ler Mais",
       primaryButtonUrl: `/noticias/${b.slug || ""}`,
     }));
