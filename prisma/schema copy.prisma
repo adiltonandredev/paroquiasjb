@@ -37,15 +37,16 @@ model Setting {
   whatsapp            String?
   email_geral         String?
   
-  // -- CAMPOS DE GOVERNO & CLERO --
+  // -- CAMPOS NOVOS DE GOVERNO & CLERO --
   paroco              String?
-  paroco_foto         String?  @db.Text
-  paroco_bio          String?  @db.Text 
-  clero_auxiliar      String?  @db.Text 
+  paroco_foto         String?  @db.LongText
+  paroco_bio          String?  @db.Text // Biografia (Texto longo)
+  clero_auxiliar      String?  @db.Text // Nomes dos vigários/irmão
   vigarios            String?  @db.Text
   religiosos          String?  @db.Text
   // ------------------------------------
 
+  // (Mantive nome_admin e email_admin por segurança, mas usaremos paroco na tela)
   nome_admin          String?
   email_admin         String?
 
@@ -58,7 +59,7 @@ model Setting {
   instagram_fotos_qtd Int      @default(6)
   texto_sobre         String?  @db.Text
   copyright           String?
-  logo_url            String?  @db.Text
+  logo_url            String? @db.LongText
   updatedAt           DateTime @updatedAt
 }
 
@@ -67,12 +68,12 @@ model Page {
   id        Int      @id @default(autoincrement())
   title     String
   slug      String   @unique
-  content   String?  @db.Text
-  type      String   @default("menu") 
+  content   String?  @db.LongText
+  type      String   @default("menu") // "menu", "submenu", "footer"
   status    String   @default("draft")
   
-  // -- HIERARQUIA DE MENU --
-  parentId  Int?     
+  // -- NOVO: HIERARQUIA DE MENU --
+  parentId  Int?     // ID da página pai (se for submenu)
   parent    Page?    @relation("PageHierarchy", fields: [parentId], references: [id])
   children  Page[]   @relation("PageHierarchy")
   // -----------------------------
@@ -86,14 +87,14 @@ model Post {
   id                 Int       @id @default(autoincrement())
   title              String
   slug               String    @unique
-  summary            String?   
-  content            String?   @db.Text
-  coverImage         String?   @db.Text
+  summary            String?   @db.VarChar(255)
+  content            String?   @db.LongText
+  coverImage         String?   @db.LongText
   category           String
   isHighlight        Boolean   @default(false)
   highlightExpiresAt DateTime?
   status             String    @default("published")
-  order              Int       @default(0)
+  order Int          @default(0)
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
 }
@@ -107,9 +108,9 @@ model Event {
   time               String
   location           String?
   slug               String?   @unique
-  summary            String?   
-  description        String?   @db.Text
-  coverImage         String?   @db.Text
+  summary            String?   @db.VarChar(255)
+  description        String?   @db.LongText
+  coverImage         String?   @db.LongText
   isHighlight        Boolean   @default(false)
   highlightExpiresAt DateTime?
   createdAt          DateTime  @default(now())
