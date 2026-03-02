@@ -4,7 +4,7 @@ import { FeatureSection } from "@/components/site/FeatureSection";
 import { NewsSection } from "@/components/site/NewsSection";
 import { LocationSection } from "@/components/site/LocationSection";
 import { MassBanner } from "@/components/site/MassBanner";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 
 async function getHeroData(): Promise<HeroSlide[]> {
   try {
