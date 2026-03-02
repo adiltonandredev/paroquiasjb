@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { Calendar, Users, Heart, MapPin, ArrowRight, Info } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";

@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { Calendar, Clock, ArrowLeft, Share2, Printer } from "lucide-react";
 import Link from "next/link";

@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { Clock, MapPin, Calendar, Navigation } from "lucide-react";
 
 interface MassData {
